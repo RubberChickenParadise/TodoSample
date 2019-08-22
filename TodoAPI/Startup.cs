@@ -52,7 +52,12 @@ namespace TodoAPI
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+
+            app.UseCors(builder => builder.AllowAnyOrigin()
+                                          .AllowAnyMethod()
+                                          .AllowAnyHeader()
+                                          .AllowCredentials());
+
             app.UseMvc();
         }
     }

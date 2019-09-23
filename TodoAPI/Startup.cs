@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 using TodoAPI.Managers;
 using TodoAPI.Repositories;
 
@@ -34,8 +35,19 @@ namespace TodoAPI
             services.AddScoped<ISessionManager, SessionManager>();
 
             services.AddScoped<IToDoRepository, ToDoRepository>();
-            
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Title = "Swagger Demo",
+                    Version = "v1",
+                    Description = "TBD",
+                    TermsOfService = "None",
+                    Contact = new Contact() { Name = "John Doe", Email = "john@xyzmail.com", Url = "www.example.com" },
+                    License = new License() { Name = "License Terms", Url = "www.example.com" }
+                });
+            });
 
         }
 
@@ -57,6 +69,17 @@ namespace TodoAPI
                                           .AllowAnyMethod()
                                           .AllowAnyHeader()
                                           .AllowCredentials());
+
+
+            app.UseSwagger();
+
+            // Serves the Swagger UI
+            app.UseSwaggerUI(c =>
+            {
+                // specifying the Swagger JSON endpoint.
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger Demo");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseMvc();
         }
